@@ -179,15 +179,43 @@ char **line_to_argv(char *line)
 
 /**
  * check_exit - split the line read from stdin (pipe & interacgive mode)
- * @program: the program file passed by user
+ * @argv: the command argv passed.
  * Return: Nothing
  */
 
-void check_exit(char *program)
+int check_exit(char **argv)
 {
 	char *test = "exit";
+	char *endptr;
+	long val;
 	/* int strcmp(const char *s1, const char *s2); */
 
-	if (strcmp(test, program) == 0)
+	if (strcmp(test, argv[0]) == 0)
+	{
+		if (argv[1])
+		{
+			errno = 0;    /* To distinguish success/failure after call */
+			val = strtol(argv[1], &endptr, 10);
+
+			/* Check for various possible errors. */
+			if (errno != 0)
+			{
+				perror("Exit");
+				return (-1);
+			}
+
+			if (endptr == argv[1])
+			{
+				/* no int in the string */
+				printf("exit: Illegal number: %s\n", argv[1]);
+				return (-1);
+			}
+
+			exit(val);
+		}
 		exit(EXIT_SUCCESS);
+	}
+
+	return (0);
 }
+

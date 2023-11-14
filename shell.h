@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
+#include <limits.h>
 
 #define _GNU_SOURCE
 /* buffer size for line tokens */
@@ -21,7 +23,7 @@ char **get_new_argv(int argc, char *const argv[]);
 char *_strcat(char *dest, char *src);
 char *search_path(char **argv, char *file);
 char **line_to_argv(char *line);
-void check_exit(char *program);
+int check_exit(char **argv);
 
 
 #endif

@@ -6,6 +6,7 @@
  *  main - the main function for the shell
  * @argc: the number of cmd args
  * @argv: the array of the arguments
+ * @env: is the process env vector.
  * Return: nothing
  */
 

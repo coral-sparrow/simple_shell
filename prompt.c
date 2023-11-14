@@ -16,8 +16,8 @@ int go_fork(char **argv, char **env, char *new_program)
 
 	/* fork to create new process */
 	pid = fork();
-	
-	if (pid == 0)  
+
+	if (pid == 0)
 	{
 		/* this the child */
 		execve(new_program, argv, env);
@@ -36,14 +36,14 @@ int go_fork(char **argv, char **env, char *new_program)
 
 /**
  * prompt - open shell prompt
- * @env: the env vars for the process
+ * @env: the env vars for the process.
  * @argv: - the array of passed commands
  * Return: p in case of sucess
  */
 
 int prompt(char *argv[], char *env[])
 {
-	int read;
+	int read, c;
 	size_t n = 0;
 	char **new_argv, *new_program, *line = NULL;
 	struct stat sb;
@@ -61,14 +61,13 @@ int prompt(char *argv[], char *env[])
 		if (read == 1)
 			/* when user press Enter */
 			continue;
-
 		line[read - 1] = '\0';
 		new_argv = line_to_argv(line);
-
 		if (!new_argv)
 			continue;
-
-		check_exit(new_argv[0]);
+		c = check_exit(new_argv);
+		if (c == -1)
+			continue;
 		if (stat(new_argv[0], &sb) != 0)
 		{
 			new_program = search_path(argv, new_argv[0]);
@@ -76,13 +75,11 @@ int prompt(char *argv[], char *env[])
 				continue;
 		} else
 			new_program = new_argv[0];
-
-		if (go_fork(argv, env, new_program) == -1)
+		if (go_fork(new_argv, env, new_program) == -1)
 		{
 			free(line);
 			exit(EXIT_FAILURE);
 		}
-
 	}
 	free(line);
 	return (0);
