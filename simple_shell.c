@@ -20,10 +20,10 @@ int main(int argc, char *argv[], char *env[])
 
 	if (!tty)
 	{
-		handel_pipe(argv);
+		handel_pipe(argv, env);
 	} else if (argc > 1)
 	{
-		handel_inline(argc, argv);
+		handel_inline(argc, argv, env);
 	} else
 	{
 		prompt(argv, env);

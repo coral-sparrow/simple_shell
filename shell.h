@@ -16,14 +16,15 @@
 /* buffer size for line tokens */
 #define MAX_SIZE 15
 
-int handel_inline(int argc, char *argv[]);
-int handel_pipe(char *argv[]);
+int handel_inline(int argc, char *argv[], char *env[]);
+int handel_pipe(char *argv[], char *env[]);
 int prompt(char *argv[], char *env[]);
 char **get_new_argv(int argc, char *const argv[]);
 char *_strcat(char *dest, char *src);
 char *search_path(char **argv, char *file);
 char **line_to_argv(char *line);
 int check_exit(char **argv);
+int go_fork(char **argv, char **env, char *new_program);
 
 
 #endif

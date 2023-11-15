@@ -1,20 +1,25 @@
-
 #include "shell.h"
 
 /**
  * handel_inline - handle piped values or inline commands
  * @argc: number of cmd args passed
  * @argv: the cmd args passed
+ * @env: the main process env to keep.
  * Return: the absolute value of int
  */
 
-int handel_inline(int argc, char *argv[])
+int handel_inline(int argc, char *argv[], char *env[])
 {
 	int wstatus = 0, pid, s_stat;
 	char **new_argv, *new_program;
-	char *new_envp[] = { NULL };
 	struct stat sb;
 
+	new_argv = get_new_argv(argc, argv);
+	if (!new_argv)
+		exit(EXIT_FAILURE);
+
+	if (check_exit(new_argv) == -1)
+		exit(EXIT_FAILURE);
 	/* determine if the path is found or not */
 	s_stat = stat(argv[1], &sb);
 	if (s_stat == 0)
@@ -29,9 +34,7 @@ int handel_inline(int argc, char *argv[])
 	if (pid == 0)
 	{
 		/* this the child */
-		new_argv = get_new_argv(argc, argv);
-		if (new_argv != NULL)
-			execve(new_program, new_argv, new_envp);
+		execve(new_program, new_argv, env);
 		perror(argv[0]);
 		exit(EXIT_FAILURE);
 

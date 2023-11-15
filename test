@@ -1,5 +1,6 @@
 /bin/ls
 /bin/who
+exit 3
 /bin/pwd
 tty
 
