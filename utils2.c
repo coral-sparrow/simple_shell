@@ -13,15 +13,21 @@
 int go_fork(char **argv, char **env, char **new_program, char **line)
 {
 
+	char *t_program;
 	int pid, wstatus = 0;
 
+	if (new_program == NULL)
+		t_program = argv[0];
 	/* fork to create new process */
 	pid = fork();
 
 	if (pid == 0)
 	{
 		/* this the child */
-		execve(*new_program, argv, env);
+		if (new_program == NULL)
+			execve(t_program, argv, env);
+		else
+			execve(*new_program, argv, env);
 		perror(argv[0]);
 		_clean_mem(argv, &(*line), &(*new_program));
 		exit(EXIT_FAILURE);
@@ -45,7 +51,6 @@ int go_fork(char **argv, char **env, char **new_program, char **line)
 		_clean_mem(argv, &(*line), &(*new_program));
 		exit(EXIT_FAILURE);
 	}
-
 	return (0);
 }
 
