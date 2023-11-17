@@ -11,7 +11,7 @@ int handel_pipe(char *argv[], char *env[])
 {
 	char *line = NULL, **new_argv, *new_program;
 	size_t n = 0;
-	int read, c;
+	int read, c, f;
 	struct stat sb;
 
 	while (1)
@@ -33,10 +33,11 @@ int handel_pipe(char *argv[], char *env[])
 			new_program = search_path(argv, new_argv[0]);
 			if (!new_program)
 				continue;
+			 f = go_fork(new_argv, env, &new_program, &line);
 		} else
-			new_program = new_argv[0];
+			f = go_fork(new_argv, env, NULL, &line);
 
-		if (go_fork(new_argv, env, &new_program, &line) == -1)
+		if (f == -1)
 		{
 			free(line);
 			exit(EXIT_FAILURE);

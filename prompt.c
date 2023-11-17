@@ -44,9 +44,10 @@ void prompt(char *argv[], char *env[])
 				_clean_mem(new_argv, &line, &new_program);
 				continue;
 			}
+			go_fork(new_argv, env, &new_program, &line);
 		} else
-			new_program = new_argv[0];
-		go_fork(new_argv, env, &new_program, &line);
+			go_fork(new_argv, env, NULL, &line);
+			
 		new_program = NULL;
 	}
 	if (line != NULL)

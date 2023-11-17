@@ -109,14 +109,12 @@ void _clean_mem(char **argv, char **line, char **new_program)
 	_free_array(&argv);
 	if (line != NULL && *line != NULL)
 	{
-		printf("line  != NULL\n");
 		free(*line);
 		*line = NULL;
 	}
 
 	if (new_program != NULL && *new_program != NULL)
 	{
-		printf("new_program  != NULL\n");
 		free(*new_program);
 		*new_program = NULL;
 	}
