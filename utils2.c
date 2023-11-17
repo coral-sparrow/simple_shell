@@ -30,7 +30,14 @@ int go_fork(char **argv, char **env, char **new_program, char **line)
 	{
 		/* this is the parent and pid is child pid */
 		wait(&wstatus);
-		_clean_mem(argv, &(*line), &(*new_program));
+		if (line == NULL && new_program == NULL)
+			_clean_mem(argv, NULL, NULL);
+		else if (line == NULL)
+			_clean_mem(argv, NULL, &(*new_program));
+		else if (new_program == NULL)
+			_clean_mem(argv, &(*line), NULL);
+		else
+			_clean_mem(argv, &(*line), &(*new_program));
 
 	} else
 	{
@@ -97,12 +104,14 @@ void _clean_mem(char **argv, char **line, char **new_program)
 	_free_array(&argv);
 	if (line != NULL && *line != NULL)
 	{
+		printf("line  != NULL\n");
 		free(*line);
 		*line = NULL;
 	}
 
 	if (new_program != NULL && *new_program != NULL)
 	{
+		printf("new_program  != NULL\n");
 		free(*new_program);
 		*new_program = NULL;
 	}
