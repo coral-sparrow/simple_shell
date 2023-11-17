@@ -25,7 +25,7 @@ int handel_pipe(char *argv[], char *env[])
 		new_argv = line_to_argv(line);
 		if (!new_argv)
 			continue;
-		c = check_exit(new_argv);
+		c = check_exit(new_argv, &line, &new_program);
 		if (c == -1)
 			continue;
 		if (stat(new_argv[0], &sb) != 0)
@@ -36,9 +36,7 @@ int handel_pipe(char *argv[], char *env[])
 		} else
 			new_program = new_argv[0];
 
-		if (c == -1)
-			continue;
-		if (go_fork(new_argv, env, new_program) == -1)
+		if (go_fork(new_argv, env, &new_program, &line) == -1)
 		{
 			free(line);
 			exit(EXIT_FAILURE);

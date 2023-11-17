@@ -6,10 +6,11 @@
  * @env: the env vars for the process
  * @argv: - the array of passed commands
  * @new_program: to be passed to exeve.
+ * @line: the line we read in.
  * Return: 0 in sucess or -1 in failure.
  */
 
-int go_fork(char **argv, char **env, char *new_program)
+int go_fork(char **argv, char **env, char **new_program, char **line)
 {
 
 	int pid, wstatus = 0;
@@ -20,16 +21,90 @@ int go_fork(char **argv, char **env, char *new_program)
 	if (pid == 0)
 	{
 		/* this the child */
-		execve(new_program, argv, env);
+		execve(*new_program, argv, env);
 		perror(argv[0]);
-		return (-1);
+		_clean_mem(argv, &(*line), &(*new_program));
+		exit(EXIT_FAILURE);
 
 	} else if (pid > 0)
+	{
 		/* this is the parent and pid is child pid */
 		wait(&wstatus);
-	else
+		_clean_mem(argv, &(*line), &(*new_program));
+
+	} else
+	{
 		/* faild to fork */
-		return (-1);
+		_clean_mem(argv, &(*line), &(*new_program));
+		exit(EXIT_FAILURE);
+	}
 
 	return (0);
+}
+
+
+
+/**
+ * _free_array - do the fork and exeve work.
+ * @array: ptr to array of pointers to be freed.
+ * Return: 0 in sucess or -1 in failure.
+ */
+void _free_array(char ***array)
+{
+	int i;
+	char **l_array;
+
+	l_array = *array;
+	if (l_array != NULL && l_array[0] != NULL)
+	{
+		for (i = 0; ; i++)
+		{
+			if (l_array[i] == NULL)
+				break;
+
+			free(l_array[i]);
+			l_array[i] = NULL;
+		}
+
+		free(l_array);
+		l_array = NULL;
+
+	} else if (l_array != NULL)
+	{
+		free(l_array);
+		l_array = NULL;
+	}
+
+}
+
+
+
+
+
+
+
+/**
+ * _clean_mem - split the line read from stdin (pipe & interacgive mode)
+ * @argv: new argv array from line to argv.
+ * @line: line allocated by getline.
+ * @new_program: the command full path from search path function.
+ * Return: Nothing
+ */
+
+void _clean_mem(char **argv, char **line, char **new_program)
+{
+
+	_free_array(&argv);
+	if (line != NULL && *line != NULL)
+	{
+		free(*line);
+		*line = NULL;
+	}
+
+	if (new_program != NULL && *new_program != NULL)
+	{
+		free(*new_program);
+		*new_program = NULL;
+	}
+
 }

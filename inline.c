@@ -8,17 +8,17 @@
  * Return: the absolute value of int
  */
 
-int handel_inline(int argc, char *argv[], char *env[])
+void handel_inline(int argc, char *argv[], char *env[])
 {
 	int wstatus = 0, pid, s_stat;
 	char **new_argv, *new_program;
 	struct stat sb;
 
 	new_argv = get_new_argv(argc, argv);
-	if (!new_argv)
+	if (new_argv == NULL)
 		exit(EXIT_FAILURE);
 
-	if (check_exit(new_argv) == -1)
+	if (check_exit(new_argv, NULL, NULL) == -1)
 		exit(EXIT_FAILURE);
 	/* determine if the path is found or not */
 	s_stat = stat(argv[1], &sb);
@@ -36,17 +36,17 @@ int handel_inline(int argc, char *argv[], char *env[])
 		/* this the child */
 		execve(new_program, new_argv, env);
 		perror(argv[0]);
+		_clean_mem(new_argv, NULL,  &new_program);
 		exit(EXIT_FAILURE);
 
 	} else if (pid > 0)
-	{
-		/* this is the parent and pid is child pid */
+	{  /* this is the parent and pid is child pid */
 		wait(&wstatus);
+		_clean_mem(new_argv, NULL,  &new_program);
 	} else
-	{
-		/* faild to fork */
+	{        /* faild to fork */
+		_clean_mem(new_argv, NULL,  &new_program);
 		exit(EXIT_FAILURE);
 	}
-	return (0);
 }
 

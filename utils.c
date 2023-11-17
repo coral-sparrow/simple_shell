@@ -10,38 +10,29 @@
 char **get_new_argv(int argc, char *const argv[])
 {
 	char **new_argv;
-	int i, j, c = 0;
+	int i;
 
 	new_argv = malloc(sizeof(char *) * argc);
-	new_argv[0] = malloc(sizeof(char) * 30);
-	if (!new_argv[0])
+	/* new_argv[0] = malloc(sizeof(char) * 30); */
+	if (!new_argv)
 		return (NULL);
 
-	strcpy(new_argv[0], argv[1]);
+	/* strcpy(new_argv[0], argv[1]); */
 
-	for (i = 1; i < (argc - 1) ; i++)
+	for (i = 0; i < (argc - 1); i++)
 	{
 		new_argv[i] = malloc(sizeof(char) * 10);
 		if (new_argv[i] == NULL)
 		{
-			printf("i is: %d\n", i);
-			c = 1;
+			_free_array(&new_argv);
 			break;
 		}
 
 		strcpy(new_argv[i], argv[i + 1]);
 	}
 
-	if (c)
-	{
-		for (j = 0; j < i; j++)
-		{
-			free(new_argv[j]);
-		}
-		return (NULL);
-	}
 
-	new_argv[i] = NULL;
+	new_argv[argc - 1] = NULL;
 	return (new_argv);
 }
 
@@ -91,10 +82,9 @@ char *_strcat(char *dest, char *src)
 
 char *search_path(char **argv, char *file)
 {
-	char *path, *tok, *tmp_str, *full_file_path;
+	char *path, *tok, *tmp_str, *full_file_path, *tmp;
 	int i, s_stat, path_len;
 	struct stat sb;
-
 
 	path = getenv("PATH");
 	path_len = strlen(path);
@@ -107,6 +97,8 @@ char *search_path(char **argv, char *file)
 	}
 
 	strcpy(tmp_str, path);
+	path = NULL;
+	tmp = tmp_str;
 
 	for (i = 0; ; i++, tmp_str = NULL)
 	{
@@ -115,15 +107,21 @@ char *search_path(char **argv, char *file)
 		if (tok == NULL)
 		{
 			perror(argv[0]);
+			free(tmp);
 			return (NULL);
 		}
+
 		full_file_path = _strcat(tok, file);
 		s_stat = stat(full_file_path, &sb);
 
 		if (s_stat == 0)
+		{
+			free(tmp);
 			return (full_file_path);
-	}
+		}
 
+		free(full_file_path);
+	}
 }
 
 
@@ -151,7 +149,8 @@ char **line_to_argv(char *line)
 		if (tok == NULL)
 			break;
 
-		new_argv[i] = tok;
+		new_argv[i] = malloc(sizeof(char) * (strlen(tok) + 1));
+		strcpy(new_argv[i], tok);
 	}
 
 	if (i > 0 && i < MAX_SIZE - 1)
@@ -166,7 +165,7 @@ char **line_to_argv(char *line)
 		return (new_argv);
 	}
 
-	free(new_argv);
+	_free_array(&new_argv);
 	return (NULL);
 
 }
@@ -176,18 +175,20 @@ char **line_to_argv(char *line)
 
 
 
-
 /**
  * check_exit - split the line read from stdin (pipe & interacgive mode)
+ * @line: line read from user
+ * @new_program: another ptr to free.
  * @argv: the command argv passed.
  * Return: Nothing
  */
 
-int check_exit(char **argv)
+int check_exit(char **argv, char **line, char **new_program)
 {
 	char *test = "exit";
 	char *endptr;
 	long val;
+
 	/* int strcmp(const char *s1, const char *s2); */
 
 	if (strcmp(test, argv[0]) == 0)
@@ -196,11 +197,11 @@ int check_exit(char **argv)
 		{
 			errno = 0;    /* To distinguish success/failure after call */
 			val = strtol(argv[1], &endptr, 10);
-
 			/* Check for various possible errors. */
 			if (errno != 0)
 			{
 				perror("Exit");
+				_clean_mem(argv, &(*line), &(*new_program));
 				return (-1);
 			}
 
@@ -208,14 +209,23 @@ int check_exit(char **argv)
 			{
 				/* no int in the string */
 				printf("exit: Illegal number: %s\n", argv[1]);
+				_clean_mem(argv, &(*line), &(*new_program));
 				return (-1);
 			}
 
+			_clean_mem(argv, &(*line), &(*new_program));
 			exit(val);
 		}
+
+		_clean_mem(argv, &(*line), &(*new_program));
 		exit(EXIT_SUCCESS);
 	}
 
 	return (0);
 }
+
+
+
+
+
 
