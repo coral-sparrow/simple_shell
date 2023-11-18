@@ -36,7 +36,6 @@ void handel_pipe(char *argv[], char *env[])
 			 wstatus = go_fork(new_argv, env, &new_program, &line);
 		} else
 			wstatus = go_fork(new_argv, env, NULL, &line);
-		printf("status is: %d\n", wstatus);
 
 	}
 	if (line != NULL) 
