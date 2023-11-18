@@ -108,19 +108,16 @@ void _clean_mem(char **argv, char **line, char **new_program)
 
 	if (argv != NULL)
 	{
-		printf("in clean argv. argv == %s\n", *argv);
 		_free_array(&argv);
 	}
 	if (line != NULL && *line != NULL)
 	{
-		printf("line is %s\n", *line);
 		free(*line);
 		 *line = NULL;
 	}
 
 	if (new_program != NULL && *new_program != NULL)
 	{
-		printf("new_program is %s\n", *new_program);
 		free(*new_program);
 		*new_program = NULL;
 	}

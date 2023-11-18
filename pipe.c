@@ -17,7 +17,6 @@ void handel_pipe(char *argv[], char *env[])
 	while (1)
 	{
 		read = getline(&line, &n, stdin);
-		printf("line is: %s\n\n", line);
 		if (read == -1) /* failed to read */
 			break;
 		if (read == 1) /* only new line char is read */
@@ -27,7 +26,6 @@ void handel_pipe(char *argv[], char *env[])
 		if (!new_argv)
 			continue;
 		c = check_exit(new_argv, &line, &new_program, wstatus);
-		printf("line is: %s, and c is: %d\n", line, c);
 		if (c == -1)
 			continue;
 		if (stat(new_argv[0], &sb) != 0)
@@ -38,6 +36,7 @@ void handel_pipe(char *argv[], char *env[])
 			 wstatus = go_fork(new_argv, env, &new_program, &line);
 		} else
 			wstatus = go_fork(new_argv, env, NULL, &line);
+		printf("status is: %d\n", wstatus);
 
 	}
 	if (line != NULL) 

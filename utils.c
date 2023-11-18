@@ -218,8 +218,7 @@ int check_exit(char **argv, char **line, char **new_program, int wstatus)
 			exit(val);
 		}
 
-		printf("check exit\n");
-		_clean_mem(argv, &(*line), &(*new_program));
+		_clean_mem(argv, &(*line), NULL);
 		exit(wstatus);
 	}
 

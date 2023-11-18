@@ -50,5 +50,5 @@ void prompt(char *argv[], char *env[])
 	}
 	if (line != NULL)
 		free(line);
-	exit(WEXITSTATUS(wstatus));
+	exit(wstatus);
 }
