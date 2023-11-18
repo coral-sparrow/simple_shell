@@ -10,7 +10,7 @@
 
 void handel_inline(int argc, char *argv[], char *env[])
 {
-	int s_stat;
+	int s_stat, wstatus = 0;
 	char **new_argv, *new_program;
 	struct stat sb;
 
@@ -18,7 +18,7 @@ void handel_inline(int argc, char *argv[], char *env[])
 	if (new_argv == NULL)
 		exit(EXIT_FAILURE);
 
-	if (check_exit(new_argv, NULL, NULL) == -1)
+	if (check_exit(new_argv, NULL, NULL, wstatus) == -1)
 		exit(EXIT_FAILURE);
 	/* determine if the path is found or not */
 	s_stat = stat(argv[1], &sb);
@@ -31,10 +31,11 @@ void handel_inline(int argc, char *argv[], char *env[])
 
 	/* fork the current process to create the child */
 	if (s_stat != 0)
-		go_fork(new_argv, env, &new_program, NULL);
+		wstatus = go_fork(new_argv, env, &new_program, NULL);
 	else
-		go_fork(new_argv, env, NULL, NULL);
+		wstatus = go_fork(new_argv, env, NULL, NULL);
 
+	exit(wstatus);
 }
 
 

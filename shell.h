@@ -17,7 +17,7 @@
 #define MAX_SIZE 15
 
 void handel_inline(int argc, char *argv[], char *env[]);
-int handel_pipe(char *argv[], char *env[]);
+void handel_pipe(char *argv[], char *env[]);
 void prompt(char *argv[], char *env[]);
 char **get_new_argv(int argc, char *const argv[]);
 char *_strcat(char *dest, char *src);
@@ -27,7 +27,7 @@ void _free_array(char ***array);
 void _clean_mem(char **argv, char **line, char **new_program);
 /* int check_exit(char **argv); */
 
-int check_exit(char **argv, char **line, char **new_program);
+int check_exit(char **argv, char **line, char **new_program, int wstatus);
 
 int go_fork(char **argv, char **env, char **new_program, char **line);
 

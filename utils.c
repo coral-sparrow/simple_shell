@@ -180,10 +180,11 @@ char **line_to_argv(char *line)
  * @line: line read from user
  * @new_program: another ptr to free.
  * @argv: the command argv passed.
+ * @wstatus: the status of previous command
  * Return: Nothing
  */
 
-int check_exit(char **argv, char **line, char **new_program)
+int check_exit(char **argv, char **line, char **new_program, int wstatus)
 {
 	char *test = "exit";
 	char *endptr;
@@ -217,8 +218,9 @@ int check_exit(char **argv, char **line, char **new_program)
 			exit(val);
 		}
 
+		printf("check exit\n");
 		_clean_mem(argv, &(*line), &(*new_program));
-		exit(EXIT_SUCCESS);
+		exit(wstatus);
 	}
 
 	return (0);

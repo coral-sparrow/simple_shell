@@ -14,13 +14,12 @@ int go_fork(char **argv, char **env, char **new_program, char **line)
 {
 
 	char *t_program;
-	int pid, wstatus = 0;
+	int pid, wstatus;
 
 	if (new_program == NULL)
 		t_program = argv[0];
 	/* fork to create new process */
 	pid = fork();
-
 	if (pid == 0)
 	{
 		/* this the child */
@@ -44,6 +43,7 @@ int go_fork(char **argv, char **env, char **new_program, char **line)
 			_clean_mem(argv, &(*line), NULL);
 		else
 			_clean_mem(argv, &(*line), &(*new_program));
+		return (WEXITSTATUS(wstatus));
 
 	} else
 	{
@@ -106,15 +106,21 @@ void _free_array(char ***array)
 void _clean_mem(char **argv, char **line, char **new_program)
 {
 
-	_free_array(&argv);
+	if (argv != NULL)
+	{
+		printf("in clean argv. argv == %s\n", *argv);
+		_free_array(&argv);
+	}
 	if (line != NULL && *line != NULL)
 	{
+		printf("line is %s\n", *line);
 		free(*line);
-		*line = NULL;
+		 *line = NULL;
 	}
 
 	if (new_program != NULL && *new_program != NULL)
 	{
+		printf("new_program is %s\n", *new_program);
 		free(*new_program);
 		*new_program = NULL;
 	}

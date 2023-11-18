@@ -1,6 +1,6 @@
 /bin/ls
 /bin/who
-exit 3
+ls -l /dsf
 /bin/pwd
-tty
-
+ttty
+ls -l
